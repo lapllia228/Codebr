@@ -1,1 +1,48 @@
-<p>article-detail works!</p>
+<div class="article-detail-container">
+  <div class="loading-container" *ngIf="!(article$ | async)">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div class="article-content" *ngIf="article$ | async as article">
+    <button mat-raised-button class="back-button" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+      Back to Articles
+    </button>
+
+    <mat-card class="detail-card">
+      <img
+        mat-card-image
+        [src]="article.image_url"
+        [alt]="article.title"
+        class="detail-image">
+
+      <mat-card-content>
+        <h1 class="article-title">{{ article.title }}</h1>
+
+        <div class="article-meta">
+          <span class="news-site">
+            <mat-icon>newspaper</mat-icon>
+            {{ article.news_site }}
+          </span>
+          <span class="published-date">
+            <mat-icon>calendar_today</mat-icon>
+            {{ article.published_at | date: 'MMMM d, yyyy - HH:mm' }}
+          </span>
+        </div>
+
+        <div class="article-description">
+          <p>{{ article.summary }}</p>
+        </div>
+
+        <button
+          mat-raised-button
+          color="primary"
+          class="read-more-button"
+          (click)="openArticle(article.url)">
+          <mat-icon>open_in_new</mat-icon>
+          Read Full Article
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

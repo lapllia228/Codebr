@@ -1,1 +1,54 @@
-<p>home works!</p>
+<div class="home-container">
+  <header class="header">
+    <h1>Space Flight News</h1>
+    <p class="subtitle">Explore the latest articles from space exploration</p>
+  </header>
+
+  <div class="search-container">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search articles</mat-label>
+      <input
+        matInput
+        [formControl]="searchControl"
+        placeholder="Enter keywords...">
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+  </div>
+
+  <div class="loading-container" *ngIf="loading$ | async">
+    <mat-spinner></mat-spinner>
+    <p>Loading articles...</p>
+  </div>
+
+  <div class="articles-grid" *ngIf="!(loading$ | async)">
+    <mat-card
+      *ngFor="let article of articles$ | async"
+      class="article-card"
+      (click)="navigateToArticle(article.id)">
+      <img
+        mat-card-image
+        [src]="article.image_url"
+        [alt]="article.title"
+        class="article-image">
+      <mat-card-content>
+        <h2
+          class="article-title"
+          [innerHTML]="article.title | highlight: (searchKeyword$ | async)!">
+        </h2>
+        <p
+          class="article-summary"
+          [innerHTML]="truncateText(article.summary, 100) | highlight: (searchKeyword$ | async)!">
+        </p>
+        <div class="article-meta">
+          <span class="news-site">{{ article.news_site }}</span>
+          <span class="published-date">{{ article.published_at | date: 'MMM d, yyyy' }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="no-results" *ngIf="(articles$ | async)?.length === 0">
+      <mat-icon>search_off</mat-icon>
+      <p>No articles found matching your search.</p>
+    </div>
+  </div>
+</div>
